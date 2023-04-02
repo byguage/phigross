@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 	
 	document.querySelector('button#go').addEventListener('click',()=>{
-		location.href='/tapToStart/index.html';
+		location.href='tapToStart/index.html';
 	});
 	document.querySelector('button#gotoCFPages').addEventListener('click',()=>{
 		location.href='https://cf.phi.han-han.xyz';
