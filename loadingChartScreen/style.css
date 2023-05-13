@@ -1,4 +1,4 @@
-@import url(../assets/css/css.css);
+@import url(assets/css/css.css);
 html,
 body {
 	box-sizing: border-box;
@@ -209,4 +209,10 @@ img.illustration {
 	margin-right: -50px;
 	transform: skew(15deg);
 	/* clip-path: polygon(75px 0, 100% 0, 400px 100%, 0 100%); */
+}
+
+@media screen and (max-width: 576px) {
+	body > div.mainContent > div.songImage {
+		display: none;
+	}
 }

@@ -1,6 +1,6 @@
-@import url(../assets/css/css.css);
+@import url(assets/css/css.css);
 html {
-	--background: url(../assets/images/ElementSqare.Half.Size.webp);
+	--background: url(assets/images/ElementSqare.Half.Size.webp);
 	background: var(--background) center center no-repeat fixed;
 	background-size: cover !important;
 	box-sizing: border-box;
@@ -94,20 +94,24 @@ div.sortMode::after {
 	background-size: cover;
 	display: block;
 	margin-left: 10px;
-	background-image: url(../assets/images/Sort.svg);
+	background-image: url(assets/images/Sort.svg);
 }
 div.songList {
 	display: flex;
 	position: absolute;
 	flex-flow: column;
-	margin-top: 100px;
-	margin-bottom: 100px;
-	overflow: hidden;
+	padding: 100px 0;
 	width: 100%;
-	/* overflow-y: scroll; */
+	height: calc(100% - 200px);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	scrollbar-width: none;
+}
+div.songList::-webkit-scrollbar {
+	display: none;
 }
 div.settingBtn::after {
-	background-image: url(../assets/images/Settings.svg) !important;
+	background-image: url(assets/images/Settings.svg) !important;
 }
 div.songItemContainer {
 	background: transparent;
@@ -366,22 +370,27 @@ div.levelChooser > div.levelItem.in::after {
 div.levelChooser > div.levelItem.at::after {
 	content: 'AT';
 }
-div.score {
-	width: 200px;
+div.scoreContainer{
+	display: flex;
+	flex-direction: row;
 	height: 100%;
+}
+div.score {
+	width: 150px;
+	height: 100%;
+	padding-right: 50px;
 	display: flex;
 	font-size: 22px;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	order: 0;
 }
 div.score::before {
 	content: attr(data-acc);
 	font-size: 12px;
-	transform: scale(0.8);
 	order: 1;
 	display: flex;
-	color: #999;
+	color: #fff;
 	justify-content: center;
 	align-items: center;
 	margin-bottom: -10px;
@@ -394,6 +403,12 @@ div.score.unplayed::after {
 	padding-right: 5px;
 	order: 2;
 	text-shadow: 0 0 5px #999;
+}
+div#deleteChart{
+	height: 100%;
+	width: 50px;
+	background: url(assets/images/TrashBin.svg) center no-repeat;
+	background-size: 80% 80%;
 }
 
 div.playBtn {
@@ -444,7 +459,7 @@ div.readyToLoadOverlay.go {
 		right: -100%;
 	}
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 576px) {
 	body {
 		padding: 0;
 	}

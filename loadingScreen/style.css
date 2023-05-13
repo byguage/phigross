@@ -1,4 +1,4 @@
-@import url(../assets/css/css.css);
+@import url(assets/css/css.css);
 html,
 body {
 	box-sizing: border-box;
@@ -8,7 +8,7 @@ body {
 	padding: 0;
 }
 body {
-	background: url(../assets/images/ElementSqare.Half.Size.webp) center center
+	background: url(assets/images/ElementSqare.Half.Size.webp) center center
 		no-repeat fixed;
 	background-size: cover !important;
 	backdrop-filter: blur(1px);
@@ -24,7 +24,7 @@ body::before {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: url(../assets/image/ElementSqare.Half.Size.webp) center center
+	background: url(assets/images/ElementSqare.Half.Size.webp) center center
 		no-repeat fixed;
 	background-size: cover;
 	filter: blur(1px);
@@ -34,7 +34,7 @@ div.tip::before {
 	content: 'Tip: ';
 }
 div.tip {
-	color: #fff;
+	color: #000;
 	position: fixed;
 	left: 2%;
 	bottom: 5%;
@@ -50,7 +50,7 @@ div.loadingBarTxT {
 	color: #000;
 	z-index: 999;
 	animation: loadingBarTXTAnim 1s ease-in-out infinite;
-	text-shadow: 0 0 5px #000;
+	text-shadow: 0 0 10px #000;
 }
 div.loadingBarBG {
 	position: absolute;

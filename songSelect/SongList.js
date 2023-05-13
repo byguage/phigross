@@ -1,4 +1,6 @@
 import { gameLevels } from '../constants.js';
+import selectSongItem_mp3 from 'assets/audio/selectSongItem.mp3';
+import {DB} from '../utils/DB.js';
 
 function SongList({ defaultLevel = 'ez' }) {
 	const listElement = document.createElement('div');
@@ -30,22 +32,34 @@ function SongList({ defaultLevel = 'ez' }) {
 	function switchSong(id) {
 		if (id === selected) return;
 		document.querySelector('#loadingBar').classList.remove('hidden');
-		const playTapSoundXHR = new XMLHttpRequest();
-		playTapSoundXHR.open('GET', '../assets/audio/selectSongItem.mp3', true);
-		playTapSoundXHR.responseType = 'arraybuffer';
-		playTapSoundXHR.onload = function () {
-			const actx = new (window.AudioContext ||
-				window.webkitAudioContext ||
-				window.mozAudioContext ||
-				window.msAudioContext)();
-			actx.decodeAudioData(this.response, function (buffer) {
-				let source = actx.createBufferSource();
-				source.buffer = buffer;
-				source.connect(actx.destination);
-				source.start(0);
+		fetch(selectSongItem_mp3)
+			.then(res => res.arrayBuffer())
+			.then(arrayBuffer => {
+				const actx = new (window.AudioContext ||
+					window.webkitAudioContext ||
+					window.mozAudioContext ||
+					window.msAudioContext)();
+				actx.decodeAudioData(arrayBuffer, function (buffer) {
+					var source = actx.createBufferSource();
+					source.buffer = buffer;
+					source.loop = false;
+					source.connect(actx.destination);
+					source.start(0);
+				});
+				
 			});
-		};
-		playTapSoundXHR.send();
+		DB()
+			.openDB('PhiCommunityPlayResults')
+			.then((result) => {
+				DB()
+					.readKey(result.objectStore, window.songMetaList[id].codename+'-'+level)
+					.then((res) => {
+						const result=res||{score:0,accuracy:0};
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').innerText=Math.round((result.score)).toString().padStart(7,'0');
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').setAttribute('data-acc',((result.accuracy)*100).toFixed(2)+'%');
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').classList.remove('unplayed');
+					});
+			});
 		if (selected !== undefined) items[selected].unSelect();
 
 		if (!listElement.classList['selected'])
@@ -89,7 +103,7 @@ function SongList({ defaultLevel = 'ez' }) {
 			currentLevelSelected = [nextLevel];
 		}
 		fetch(
-			`https://charts.phi.han-han.xyz/${codename}/${songMeta['illustration']}`
+			`https://charts.phicommunity.com.cn/${codename}/${songMeta['illustration']}`
 		)
 			.then((response) => response.blob())
 			.then((blob) => {
@@ -103,12 +117,12 @@ function SongList({ defaultLevel = 'ez' }) {
 			.catch((err) => {
 				console.err(
 					'获取曲绘失败!',
-					`url: https://charts.phi.han-han.xyz/${codename}/${songMeta['illustration']}`,
+					`url: https://charts.phicommunity.com.cn/${codename}/${songMeta['illustration']}`,
 					err
 				);
 			});
 		fetch(
-			`https://charts.phi.han-han.xyz/${codename}/${songMeta['musicFile']}`
+			`https://charts.phicommunity.com.cn/${codename}/${songMeta['musicFile']}`
 		)
 			.then((response) => response.blob())
 			.then((blob) => {
@@ -118,74 +132,72 @@ function SongList({ defaultLevel = 'ez' }) {
 				} catch (e) {
 					null;
 				}
-				window.playSongXHRObj = new XMLHttpRequest();
-				window.playSongXHRObj.open('GET', songUrl, true);
-				window.playSongXHRObj.responseType = 'arraybuffer';
-				window.playSongXHRObj.onload = function () {
-					const gainNode = window.slicesAudioContext.createGain();
-					window.slicesAudioContext.decodeAudioData(
-						this.response,
-						function (buffer) {
-							try {
-								window.sliceAudioContextSource.stop();
-							} catch (e) {
-								null;
-							}
-							window.sliceAudioContextSource =
-								window.slicesAudioContext.createBufferSource();
-							window.sliceAudioContextSource.buffer = buffer;
-							window.sliceAudioContextSource.connect(gainNode);
-							gainNode.connect(
-								window.slicesAudioContext.destination
-							);
-							window.sliceAudioContextSource.start(
-								0,
-								songMeta['sliceAudioStart']
-							);
-							gainNode.gain.setValueAtTime(
-								0.01,
-								window.slicesAudioContext.currentTime
-							);
-							gainNode.gain.linearRampToValueAtTime(
-								1,
-								window.slicesAudioContext.currentTime + 1
-							);
-							clearInterval(window.sliceAudioInterval);
-							window.sliceAudioInterval = setInterval(() => {
-								gainNode.gain.linearRampToValueAtTime(
+				fetch(songUrl)
+					.then((response) => response.arrayBuffer())
+					.then((arrayBuffer) => {
+						const gainNode = window.slicesAudioContext.createGain();
+						window.slicesAudioContext.decodeAudioData(
+							arrayBuffer,
+							function (buffer) {
+								try {
+									window.sliceAudioContextSource.stop();
+								} catch (e) {
+									null;
+								}
+								window.sliceAudioContextSource =
+									window.slicesAudioContext.createBufferSource();
+								window.sliceAudioContextSource.buffer = buffer;
+								window.sliceAudioContextSource.connect(gainNode);
+								gainNode.connect(
+									window.slicesAudioContext.destination
+								);
+								window.sliceAudioContextSource.start(
+									0,
+									songMeta['sliceAudioStart']
+								);
+								gainNode.gain.setValueAtTime(
 									0.01,
+									window.slicesAudioContext.currentTime
+								);
+								gainNode.gain.linearRampToValueAtTime(
+									1,
 									window.slicesAudioContext.currentTime + 1
 								);
-								setTimeout(() => {
-									window.sliceAudioContextSource.stop();
-									window.sliceAudioContextSource =
-										window.slicesAudioContext.createBufferSource();
-									window.sliceAudioContextSource.buffer =
-										buffer;
-									window.sliceAudioContextSource.connect(
-										gainNode
-									);
-									window.sliceAudioContextSource.start(
-										0,
-										songMeta['sliceAudioStart']
-									);
+								clearInterval(window.sliceAudioInterval);
+								window.sliceAudioInterval = setInterval(() => {
 									gainNode.gain.linearRampToValueAtTime(
-										1,
-										window.slicesAudioContext.currentTime +
-											1
+										0.01,
+										window.slicesAudioContext.currentTime + 1
 									);
-								}, 500);
-							}, 15000);
-						}
-					);
-					document.querySelector('#loadingBar').classList.add('hidden');
-				};
-				window.playSongXHRObj.send();
+									setTimeout(() => {
+										window.sliceAudioContextSource.stop();
+										window.sliceAudioContextSource =
+											window.slicesAudioContext.createBufferSource();
+										window.sliceAudioContextSource.buffer =
+											buffer;
+										window.sliceAudioContextSource.connect(
+											gainNode
+										);
+										window.sliceAudioContextSource.start(
+											0,
+											songMeta['sliceAudioStart']
+										);
+										gainNode.gain.linearRampToValueAtTime(
+											1,
+											window.slicesAudioContext.currentTime +
+												1
+										);
+									}, 500);
+								}, 15000);
+							}
+						);
+						document.querySelector('#loadingBar').classList.add('hidden');
+					});
 			})
 			.catch((err) => {
 				console.err(
 					'获取歌曲失败!',
-					`url: https://charts.phi.han-han.xyz/${codename}/${songMeta['musicFile']}`,
+					`url: https://charts.phicommunity.com.cn/${codename}/${songMeta['musicFile']}`,
 					err
 				);
 			});
@@ -198,6 +210,19 @@ function SongList({ defaultLevel = 'ez' }) {
 		window.levelSelected = newLevel;
 		items.forEach(({ switchLevel }) => switchLevel(newLevel));
 		level = newLevel;
+		const codename=document.querySelector('div.songItem.selected').getAttribute('data-codename');
+		DB()
+			.openDB('PhiCommunityPlayResults')
+			.then((result) => {
+				DB()
+					.readKey(result.objectStore, codename+'-'+level)
+					.then((res) => {
+						const result=res||{score:0,accuracy:0};
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').innerText=Math.round((result.score)).toString().padStart(7,'0');
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').setAttribute('data-acc',((result.accuracy)*100).toFixed(2)+'%');
+						document.querySelector('#rightArea > div.detailBar.unplayed > div.score').classList.remove('unplayed');
+					});
+			});
 	}
 
 	function sort(fn) {
@@ -232,7 +257,6 @@ function SongList({ defaultLevel = 'ez' }) {
 			items.forEach(({ element }) => (element.style.order = ''));
 			break;
 		}
-		listElement.style.top = -items[selected].element.offsetTop + 'px';
 	}
 }
 

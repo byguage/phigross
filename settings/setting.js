@@ -41,7 +41,7 @@ export const settings = [
 		type: 'button',
 		title: '根据声音调整偏移率',
 		onClick() {
-			location.href = './calibrate.html';
+			location.href = './calibrate/index.html';
 		},
 	},
 	{
@@ -84,8 +84,8 @@ export const settings = [
 	//下面就是模拟器其他的功能了
 	{
 		type: 'toggle',
-		title: '使用游玩友好型Note',
-		codename: 'usePlayerFriendlyUI',
+		title: '开启低分辨率模式',
+		codename: 'enableLowRes',
 	},
 	{
 		type: 'slide',
@@ -105,7 +105,7 @@ export const settings = [
 	},
 	{
 		type: 'toggle',
-		title: '开启HyperMode',
+		title: '开启HyperMode(严格判定)',
 		codename: 'hyperMode',
 	},
 	{
@@ -125,9 +125,22 @@ export const settings = [
 	// 	codename: 'showTransition',
 	// },
 	{
+		type: 'slide',
+		title: '谱面倍速(10为1倍)',
+		codename: 'chart-speedchange',
+		range: [7, 15],
+		defaultValue: 10,
+		offset: 1,
+	},
+	{
 		type: 'toggle',
 		title: '启用AutoPlay',
 		codename: 'autoplay',
+	},
+	{
+		type: 'toggle',
+		title: '游玩时使用背景动画作为背景',
+		codename: 'useBGABG',
 	},
 	{
 		type: 'toggle',
@@ -139,19 +152,30 @@ export const settings = [
 		title: '显示定位点',
 		codename: 'showPoint',
 	},
-	// {
-	// 	type: 'button',
-	// 	title: '观看教学',
-	// 	onClick() {
-	// 		location.href = '../whilePlaying/index.html?play=introduction&l=ez&c=official';
-	// 	},
-	// },
+	{
+		type: 'button',
+		title: '观看教学',
+		onClick() {
+			location.href = '../whilePlaying/index.html?play=tutorial&l=ez';
+		},
+	},
 	{
 		type: 'button',
 		title: '修改玩家昵称',
 		onClick() {
-			const name = prompt('输入昵称', 'GUEST');
+			const name = prompt('输入昵称', localStorage.getItem('playerName')||'GUEST');
+			if (name ==''||name==null||name==undefined) {
+				console.error('Failed to set player name : Empty input');
+				return;
+			}
 			localStorage.setItem('playerName', name);
+		},
+	},
+	{
+		type: 'button',
+		title: '修改玩家头像',
+		onClick() {
+			document.getElementById("fileBtn").click();
 		},
 	},
 	{
