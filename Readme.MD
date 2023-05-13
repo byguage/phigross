@@ -1,7 +1,12 @@
-# 此仓库将封存，请[点此](https://github.com/Yuameshi/PhiCommunity)前往最新仓库
-
 # 这是什么？
 这是一款名为`PhiCommunity`的节奏游戏，它仿照`Phigros`制作。
+
+# APP已发布(测试版本)
+
+请前往[Actions - PhiCommunityAPP](https://github.com/Yuameshi/PhiCommunityAPP/actions)的最新构建下载Artifact，此构建为`Debug`构建，仅用于测试。
+
+您也可以前往[Releases - PhiCommunityAPP](https://github.com/Yuameshi/PhiCommunityAPP/releases)下载发行版本（如果有）。
+
 # 许可证
 
 源代码(不包括多媒体资源，除非另有说明)在[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html)许可下分发
@@ -34,6 +39,8 @@ GNU Affero 通用公共许可证 v3.0
 
 </details>
 <br >
+
+对于多媒体资源，我们保留著作权。
 
 >对于`多媒体资源`的定义
 >
