@@ -1,6 +1,6 @@
-@import url(../assets/css/css.css);
+@import url(assets/css/css.css);
 html {
-	background: url(../assets/images/ElementSqare.Half.Size.webp) center center
+	background: url(assets/images/ElementSqare.Half.Size.webp) center center
 		no-repeat fixed;
 	background-size: cover;
 	box-sizing: border-box;
@@ -17,7 +17,7 @@ html::before {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	background: url(../assets/images/ElementSqare.Half.Size.webp) no-repeat
+	background: url(assets/images/ElementSqare.Half.Size.webp) no-repeat
 		center center fixed;
 	background-size: cover;
 	filter: blur(10px) brightness(0.5);
